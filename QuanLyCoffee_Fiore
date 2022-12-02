@@ -1,0 +1,228 @@
+create database CAPHE
+go
+use CAPHE
+go
+
+create table NHANVIEN
+(	MaNV varchar(10),
+	TenNV nvarchar(100),
+	Ngaysinh date, 
+	Diachi nvarchar(100),
+	SoDienThoai varchar(15),
+	primary key (MaNV))
+go
+
+create table LOAIHANG
+(	MaLoaiHang varchar(10),
+	TenLoaiHang nvarchar(50),
+	TinhTrang nvarchar(20)
+	primary key (MaLoaiHang))
+go
+
+create table HANG
+(	MaHang varchar(10),
+	TenHang nvarchar(50),
+	DonViTinh int,
+	DonGiaBan decimal (12,0),
+	MaLoaiHang varchar(10),
+	Primary key (MaHang),
+	foreign key (MaLoaiHang) references LOAIHANG)
+go
+
+create table NHACC
+(	MaNCC varchar(10),
+	TenNCC nvarchar(50),
+	DiaChiNCC nvarchar(100),
+	primary key (MaNCC))
+go
+
+create table KHO
+(	MaKho varchar(10),
+	TenKho nvarchar(100),
+	DiaChiKho nvarchar(100),
+	primary key (MaKho))
+go
+
+create table NGUYENLIEU
+(	MaNL varchar(10),
+	TenNguyenLieu nvarchar(100),
+	DonGiaTinh decimal(12,0),
+	DonViTinh nvarchar(20)
+	primary key(MaNL))
+go
+
+create table HOADONBAN
+(	MaHD varchar(10),
+	NgayBan date,
+	TongCong decimal (15,0),
+	primary key (MaHD),
+	MaNV varchar(10), 
+	foreign key (MaNV) references NHANVIEN)
+go
+
+create table CHITIET_HD
+(	MaCTHD varchar(10),
+	SoLuongBan int,
+	ThanhTien decimal(12,0),
+	MaHD varchar(10),
+	MaHang varchar (10),
+	primary key (MaCTHD),
+	foreign key (MaHD) references HOADONBAN,
+	foreign key (MaHang) references HANG)
+go
+
+create table PHIEUNHAP 
+(	MaPNH varchar(10),
+	MaNV varchar(10),
+	MaNCC varchar(10),
+	MaKho varchar(10),
+	NgayNhap date,
+	VAT float,
+	TongTien decimal(12,0),
+	TongCong decimal(12,0),
+	primary key (MaPNH),
+	foreign key (MaKho) references KHO,
+	foreign key (MaNV) references NHANVIEN,
+	foreign key (MaNCC) references NHACC)
+go
+
+create table CHITIET_PN
+(	MaCTPNH varchar(10),
+	MaNL varchar(10),
+	MaPNH varchar(10),
+	SoLuongNhap int,
+	ThanhTien numeric(12,0),
+	primary key (MaCTPNH),
+	foreign key (MaNL) references NGUYENLIEU,
+	foreign key (MaPNH) references PHIEUNHAP)
+go
+
+--TẠO INDEX
+Create NonClustered Index idx_TenHang on HANG(TenHang)
+
+---XÂY DỰNG CƠ SỞ DỮ LIỆU:
+
+--BẢNG PHIẾU NHẬP
+insert into PHIEUNHAP values ('BH001', 'NV003','BHX','K001','2022-07-03',0,370000,370000)
+insert into PHIEUNHAP values ('BH002', 'NV001','TT','K002','2022-07-15',0,154500,154500)
+insert into PHIEUNHAP values ('BH003', 'NV003','BHX','K001','2022-07-20',0,126000,126000)
+insert into PHIEUNHAP values ('BH004', 'NV005','VMC','K003','2022-08-28',0,200000,200000)
+insert into PHIEUNHAP values ('BH005', 'NV002','TT','K002','2022-08-20',0,252000,252000)
+insert into PHIEUNHAP values ('BH006', 'NV001','VMC','K003','2022-09-17',0,170000,170000)
+insert into PHIEUNHAP values ('BH007', 'NV004','BHX','K001','2022-09-20',0,139000,139000)
+insert into PHIEUNHAP values ('BH008', 'NV003','BHX','K001','2022-10-06',0,230000,230000)
+insert into PHIEUNHAP values ('BH009', 'NV003','VMC','K001','2022-10-06',0,231000,231000)
+insert into PHIEUNHAP values ('BH0010', 'NV003','BHX','K001','2022-10-06',0,65000,65000)
+--BẢNG NHÂN VIÊN
+insert into NHANVIEN values ('NV001',N'Nguyễn Trí Nhân', '2003-10-12',N'23 Tô Hiến Thành', '0912431678')
+insert into NHANVIEN values ('NV002',N'Lê Thị Kiều Trinh', '2002-11-05',N'11 Phan Tôn', '0153623512')
+insert into NHANVIEN values ('NV003',N'Trần Thị Diệu Ly', '2002-6-16',N'03 Phan Hành Sơn', '0453763232')
+insert into NHANVIEN values ('NV004',N'Lê Thị Mỹ Trâm', '2002-01-19',N'45 Hàm Nghi', '0123546789')
+insert into NHANVIEN values ('NV005',N'Nguyễn Thị Huyền Luy', '2003-10-22',N'18 Lương Thế Vinh', '0965123575')
+
+--BẢNG NHÀ CUNG CẤP
+insert into NHACC values ('BHX',N'Bạc Hà Xanh',N'146 Duy Tân, quận Hải Châu, Đà Nẵng')
+insert into NHACC values ('TT',N'Thanh Thúy Foods',N'08 Phú Xuân 3, quận Liên Chiểu, Đà Nẵng')
+insert into NHACC values ('VMC',N'VMC Group',N'364 Điện Biên Phủ, quận Thanh Khê, Đà Nẵng')
+
+--BẢNG LOẠI HÀNG
+insert into LOAIHANG values ('CAFE', N'Cà phê',N'Còn')
+insert into LOAIHANG values ('FT', N'Trà trái cây', N'Thiếu')
+insert into LOAIHANG values ('FT', N'Trà trái cây', N'Còn')
+insert into LOAIHANG values ('HT',N'Trà nóng',N'Còn')
+insert into LOAIHANG values ('K', N'Khác', N'Còn')
+
+--BẢNG HOADONBAN
+insert into HOADONBAN values ('HD001', '2022-10-19', 30000,'NV001')
+insert into HOADONBAN values ('HD002', '2022-10-19', 40000,'NV001')
+insert into HOADONBAN values ('HD003', '2022-10-19', 20000,'NV001')
+insert into HOADONBAN values ('HD004', '2022-10-19', 25000,'NV001')
+insert into HOADONBAN values ('HD005', '2022-10-19', 40000,'NV001')
+insert into HOADONBAN values ('HD006', '2022-10-19', 35000,'NV001')
+insert into HOADONBAN values ('HD007', '2022-10-20', 25000,'NV003')
+insert into HOADONBAN values ('HD008', '2022-10-20', 35000,'NV003')
+insert into HOADONBAN values ('HD009', '2022-10-20', 25000,'NV003')
+insert into HOADONBAN values ('HD0010', '2022-10-20', 70000,'NV003')
+insert into HOADONBAN values ('HD0011', '2022-10-20', 27000,'NV003')
+insert into HOADONBAN values ('HD0012', '2022-10-20', 30000,'NV003')
+insert into HOADONBAN values ('HD0013', '2022-10-21', 60000,'NV005')
+insert into HOADONBAN values ('HD0014', '2022-10-20', 25000,'NV005')
+insert into HOADONBAN values ('HD0015', '2022-10-20', 30000,'NV005')
+
+--BẢNG KHO
+insert into KHO values ('K001', N'Kho Bạc Hà Xanh',N'49 Nguyễn Trác, quận Hải Châu, Đà Nẵng')
+insert into KHO values ('K002', N'Kho Thanh Thúy Foods',N'06 Phú Xuân 3, quận Liên Chiểu, Đà Nẵng')
+insert into KHO values ('K003', N'Kho VMC Group',N'400 Điện Biên Phủ, quận Thanh Khê, Đà Nẵng')
+
+--BẢNG NGUYENLIEU
+insert into NGUYENLIEU values ('HN001',N'Siro Davinci Đào',185000,N'Chai')
+insert into NGUYENLIEU values ('HN002',N'Sinh Tố Osterberg',100000,N'Chai')
+insert into NGUYENLIEU values ('HN003',N'Đào Ngâm Hosen', 63000,N'Lon')
+insert into NGUYENLIEU values ('HN004',N'Sữa Đặc Vinamilk Ngôi Sao Phương Nam Xanh Biển 1.284Kg',51500,N'Hộp')
+insert into NGUYENLIEU values ('HN005',N'Siro Monin Hạt Dẻ', 193000,N'Chai')
+insert into NGUYENLIEU values ('HN006',N'Sinh Tố Berrino Chanh Dây', 85000,N'Chai')
+insert into NGUYENLIEU values ('HN007',N'Kem Sữa Richs 454g', 63000,N'Hộp')
+insert into NGUYENLIEU values ('HN008',N'Đào Ngâm Rhodes', 65000,N'Hộp')
+insert into NGUYENLIEU values ('HN009',N'Syrup Davinci Peach', 230000,N'Chai')
+insert into NGUYENLIEU values ('HN0010',N'Syrup Monin Hazelnut (Hạt Dẻ)', 231000,N'Chai')
+
+--BẢNG HÀNG
+insert into HANG values ('LH001',N'Trà Đào',1,35000,'FT')
+insert into HANG values ('LH002',N'Cà Phê Sữa',2,40000,'CAFE')
+insert into HANG values ('LH003',N'Trà Hoa Quả Nhiệt Đới',1,30000,'FT')
+insert into HANG values ('LH004',N'Lục Trà Ổi Hồng',1,35000,'FT')
+insert into HANG values ('LH005',N'Trà Hoa Cúc Mật Ong',1,20000,'HT')
+insert into HANG values ('LH006',N'Cà Phê Mặn',1,25000,'CAFE')
+insert into HANG values ('LH007',N'Trà Đào',2,70000,'FT')
+insert into HANG values ('LH008',N'Trà Dâu Hương Thảo',2,60000,'FT')
+insert into HANG values ('LH009',N'Trà Thanh Yên Mật Ong',2,40000,'HT')
+insert into HANG values ('LH0010',N'Trà Táo Xanh Chanh Dây',1,30000,'FT')
+insert into HANG values ('LH0011',N'Hồng Trà Xí Muội',1,30000,'FT')
+insert into HANG values ('LH0012',N'Cam Vắt',1,25000,'K')
+insert into HANG values ('LH0013',N'Nước Chanh',1,25000,'K')
+insert into HANG values ('LH0014',N'Machiato Chanh Ổi',1,27000,'K')
+insert into HANG values ('LH0015',N'Chocolate',1,25000,'K')
+
+--BẢNG CHI TIẾT PHIẾU NHẬP
+insert into CHITIET_PN values ('CTPN01','HN001','BH001',2,370000)
+insert into CHITIET_PN values ('CTPN02','HN002','BH004',2,200000)
+insert into CHITIET_PN values ('CTPN03','HN003','BH003',2,126000)
+insert into CHITIET_PN values ('CTPN04','HN004','BH002',3,154500)
+insert into CHITIET_PN values ('CTPN05','HN005','BH007',1,139000)
+insert into CHITIET_PN values ('CTPN06','HN006','BH006',2,170000)
+insert into CHITIET_PN values ('CTPN07','HN007','BH005',4,252000)
+insert into CHITIET_PN values ('CTPN08','HN008','BH0010',1,65000)
+insert into CHITIET_PN values ('CTPN09','HN009','BH008',1,230000)
+insert into CHITIET_PN values ('CTPN010','HN0010','BH009',1,231000)
+
+--BẢNG CHI TIẾT HÓA ĐƠN
+insert into CHITIET_HD values ('CTHD01',1,35000,'HD006','LH001')
+insert into CHITIET_HD values ('CTHD02',2,40000,'HD002','LH002')
+insert into CHITIET_HD values ('CTHD03',1,30000,'HD001','LH003')
+insert into CHITIET_HD values ('CTHD04',1,35000,'HD008','LH004')
+insert into CHITIET_HD values ('CTHD05',1,20000,'HD003','LH005')
+insert into CHITIET_HD values ('CTHD06',1,25000,'HD004','LH006')
+insert into CHITIET_HD values ('CTHD07',2,70000,'HD0010','LH007')
+insert into CHITIET_HD values ('CTHD08',2,60000,'HD0013','LH008')
+insert into CHITIET_HD values ('CTHD09',2,40000,'HD005','LH009')
+insert into CHITIET_HD values ('CTHD010',1,30000,'HD0012','LH0010')
+insert into CHITIET_HD values ('CTHD011',1,30000,'HD0015','LH0011')
+insert into CHITIET_HD values ('CTHD012',1,25000,'HD007','LH0012')
+insert into CHITIET_HD values ('CTHD013',1,25000,'HD0014','LH0013')
+insert into CHITIET_HD values ('CTHD014',1,27000,'HD0011','LH0014')
+insert into CHITIET_HD values ('CTHD015',1,25000,'HD009','LH0015')
+
+select *from NHANVIEN
+select *from NGUYENLIEU
+select *from PHIEUNHAP
+
+
+--BACKUP 
+--FullBack
+backup database CAPHE to disk= 'D:\BACKUP\CAPHE_Full.back'
+
+--Diff Back
+backup database CAPHE to disk= 'D:\BACKUP\CAPHE_diff.back'
+
+--Trans Log
+backup database CAPHE to disk= 'D:\BACKUP\CAPHE_Log.back'
